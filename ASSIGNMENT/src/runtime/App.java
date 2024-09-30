@@ -14,11 +14,16 @@ public class App {
         library.add("Pride and Prejudice");
         library.add("The Catcher in the Rye");
         library.add("The Lord of the Rings");
-        library.add("War and Peace");
-        library.add("Pride and Prejudice");
-        library.add("The Catcher in the Rye");
-        library.add("The Lord of the Rings");
+        
+        library.borrowBook("The Lord of the Rings");
+        library.borrowBook("The Catcher in the Rye");
+        
+        library.returnBook("The Lord of the Rings");
+        
         library.displayBooks();
-        library.search("1984");
+        System.out.println("_________________________________________________________");
+        library.borrowedBooks.displayBorrowedBooks();
+
+        library.getStatus("The Lord of the Ring");
     }
 }

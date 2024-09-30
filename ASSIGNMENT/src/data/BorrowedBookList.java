@@ -2,7 +2,7 @@ package data;
 
 public class BorrowedBookList {
 
-    private class BorrowedBookNode {
+    public class BorrowedBookNode {
 
         String title;
         BorrowedBookNode next;
@@ -12,7 +12,7 @@ public class BorrowedBookList {
             this.next = null;
         }
     }
-    private BorrowedBookNode head;
+    public static BorrowedBookNode head;
 
     public BorrowedBookList() {
         head = null;
@@ -55,9 +55,10 @@ public class BorrowedBookList {
         while (current != null) {
             System.out.println(count + ". " + current.title);
             current = current.next;
+            count++;
         }
     }
-    
+
     public void traverse() {
         BorrowedBookNode current = head;
         while (current != null) {
@@ -70,23 +71,31 @@ public class BorrowedBookList {
         if(head == null){
             return null;
         }
-        
         BorrowedBookNode current = head;
-        while (!current.next.title.equalsIgnoreCase(book)) {
+//        trường hợp book ở đầu tiên
+        if(current.title.equalsIgnoreCase(book)) {
+            head = current.next; 
+            return current;
+        }
+
+//        chạy từ phần từ thứ hai chở đi
+        while(current.next != null){
+            if(current.next.title.equalsIgnoreCase(book)){
+                break;
+            }
             current = current.next;
         }
-        BorrowedBookNode tmp = current.next;
-//        trường hợp nếu mình remove book ở cuối cùng
+//        trường hợp ko có book trong borrowedBook
+        if(current.next == null) return null;
+//        trường hợp book ở cuối danh sách
         if(current.next.next == null){
-            
             current.next = null;
-            return tmp;
         }
-//        xóa borrowedBook
+        BorrowedBookNode tmp = current;
         current.next = current.next.next;
-        return tmp;
+        return current.next;
     }
-    
+
     public void insert(String title) {
         BorrowedBookNode bookNode = new BorrowedBookNode(title);
         if (head == null) {
@@ -99,20 +108,36 @@ public class BorrowedBookList {
         }
         current.next = bookNode;
     }
-    
-    public void search(String title){
-        if(this.head == null){
+
+    public void search(String title) {
+        if (this.head == null) {
             System.out.println("BorrowedList Is Empty");
             return;
         }
         BorrowedBookNode current = this.head;
-        while(current != null){
-            if(current.title.equals(title)){
+        while (current != null) {
+            if (current.title.equals(title)) {
                 System.out.println(current.title);
                 return;
             }
             current = current.next;
         }
         System.out.println("Not Found");
+    }
+
+    public int find(String title) {
+        int pos = 0;
+        BorrowedBookNode current = head;
+        if (head == null) {
+            return -1;
+        }
+        while (current != null) {
+            if (current.title.equalsIgnoreCase(title)) {
+                return pos;
+            }
+            pos++;
+            current = current.next;
+        }
+        return -1;
     }
 }
