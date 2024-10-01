@@ -28,6 +28,8 @@ public class App {
         menu.addNewOption("Return a book");
         menu.addNewOption("Display available books");
         menu.addNewOption("Display borrowed books");
+        menu.addNewOption("Searching a book in available books");
+        menu.addNewOption("Searching a book in borrowed books");
         menu.addNewOption("Exit");
 
         int choice;
@@ -59,8 +61,18 @@ public class App {
                 case 5:
                     library.displayBorrowedList();
                     break;
-
+                    
                 case 6:
+                    String str = Inputter.getString("Enter string to search: ", "Required not blank");
+                    library.searchAvailList(str);
+                    break;
+                    
+                case 7:
+                    String search_str = Inputter.getString("Enter string to search: ", "Required not blank");
+                    library.searchBorrowedList(search_str);
+                    break;
+                    
+                case 8:
                     System.out.println("Exiting the program...");
                     break;
 
@@ -68,10 +80,10 @@ public class App {
                     System.out.println("Invalid choice. Please select a valid option.");
             }
 
-            if (choice != 6 && !Menu.isContinue()) {
+            if (choice != 8 && !Menu.isContinue()) {
                 break;
             }
 
-        } while (choice != 6);
+        } while (choice != 8);
     }
 }
