@@ -2,99 +2,132 @@ package data;
 
 public class Library {
 
-    private String[] books;
-    private int bookCount;
-    public BorrowedBookList borrowedBooks;
+    private String[] avail_list;
+    private int quantity;
+    private LinkedList borrowed_list;
 
     public Library() {
-        books = new String[10];
-        bookCount = 0;
-        borrowedBooks = new BorrowedBookList();
+        avail_list = new String[10];
+        quantity = 0;
+        borrowed_list = new LinkedList();
     }
 
     public void add(String title) {
-        if (bookCount + 1 > books.length) {
+        if (quantity + 1 > avail_list.length) {
             resize();
         }
-        books[bookCount] = title;
-        bookCount++;
+        avail_list[quantity] = title;
+        quantity++;
     }
 
     public void resize() {
-        String[] temp = new String[books.length + books.length / 2];
-        for (int i = 0; i < bookCount; i++) {
-            temp[i] = books[i];
+        // increase 50% size
+        String[] temp = new String[avail_list.length + avail_list.length / 2];
+        for (int i = 0; i < quantity; i++) {
+            temp[i] = avail_list[i];
         }
-        books = temp;
-    }
-
-    public boolean returnBook(String title) {
-        if (borrowedBooks.RemoveBorrowedBook(title) == null) {
-            return false;
-        }
-        books[bookCount++] = title;
-        return true;
+        avail_list = temp;
     }
 
     // Method in tất cả sách hiện có trong thư viện
-    public void displayBooks() {
+    public void displayAvailList() {
         int count = 1;
-        System.out.println("Books available in the library:");
-        for (int i = 0; i < bookCount; i++) {
-            System.out.println(count + ". " + books[i]);
+        System.out.println("____________Avail books__________");
+        for (int i = 0; i < quantity; i++) {
+            System.out.println(count + ". " + avail_list[i]);
             count++;
         }
+        System.out.println("");
+    }
+    
+    public void displayBorrowedList() {
+        System.out.println("__________Borrowed books_________");
+        borrowed_list.display();
+        System.out.println("");
     }
 
     public void getStatus(String title) {
-        if (find(title) == -1) {
-            if (borrowedBooks.find(title) == -1) {
-                System.out.println("not in the library at all.");
-            } else {
-                System.out.println("borrowed");
-            }
-        } else {
-            System.out.println("available");
+        System.out.print("Status of \"" + title + "\": ");
+        if(borrowed_list.exist(title) == true) {
+            System.out.println("Already borrowed");
+            return;
         }
+        if(exist(title) == true) {
+            System.out.println("Available");
+            return;
+        }
+        System.out.println("Not exists in the library system");
     }
 
     // muon sach
-    public void borrowBook(String title) { 
-        for (int i = 0; i < bookCount; i++) {
-            if (books[i].equals(title)) {
-                for (int j = i; j < bookCount - 1; j++) {
-                    books[j] = books[j + 1];
-                }
-                bookCount--;
-
-                // them vao borrowed book
-                borrowedBooks.add(title);
-                System.out.println("'" + title + "' has been borrowed.");
-                return;
-            }
+    public boolean borrowBook(String title) { 
+        if(borrowed_list.exist(title)) {
+            System.out.println("Already borrowed!");
+            return false;
         }
-        System.out.println("'" + title + "' is not available in the library.");
+        if(exist(title) == false) {
+            System.out.println("Not exists in system");
+            return false;
+        }
+        delete(title);
+        // them vao borrowed book
+        borrowed_list.add(title);
+        return true;
     }
 
-    public int find(String title) {
-        for (int i = 0; i < bookCount; i++) {
-            if (books[i].equalsIgnoreCase(title)) {
+    public boolean returnBook(String title) {
+        if(borrowed_list.delete(title) == false) {
+            System.out.println("Not exists in Borrowed List!");
+            return false;
+        }
+        add(title);
+        return true;
+    }
+    
+    public boolean exist(String title) {
+        for (int i = 0; i < quantity; i++) {
+            if (avail_list[i].equalsIgnoreCase(title)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int indexOf(String title) {
+        for (int i = 0; i < quantity; i++) {
+            if (avail_list[i].equalsIgnoreCase(title)) {
                 return i;
             }
         }
         return -1;
     }
 
-    public void delete(String title) {
-        int delete_idx = find(title);
+    public boolean delete(String title) {
+        int delete_idx = indexOf(title);
         if (delete_idx == -1) {
-            System.out.println("Not found");
-            return;
+            return false;
         }
-        for (int i = delete_idx; i < books.length; i++) {
-            books[i] = books[i + 1];
+        for (int i = delete_idx; i < quantity - 1; i++) {
+            avail_list[i] = avail_list[i + 1];
         }
-        bookCount--;
+        quantity--;
+        return true;
+    }
+    
+    public void searchAvailList(String search_str) {
+        System.out.println("Qualified list:");
+        for(int i = 0; i < quantity; i++) {
+            if(avail_list[i].toLowerCase().contains(search_str.trim().toLowerCase())) {
+                System.out.println((i+1) + ": " + avail_list[i]);
+            }
+        }
+        System.out.println("");
+    }
+    
+    public void searchBorrowedList(String search_str) {
+        System.out.println("Qualified list:");
+        borrowed_list.search(search_str);
+        System.out.println("");
     }
 
 }
