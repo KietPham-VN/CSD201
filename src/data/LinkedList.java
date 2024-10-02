@@ -58,24 +58,47 @@ public class LinkedList {
         }
     }
 
+//    public boolean delete(String data) {
+//        int delete_idx = indexOf(data);
+//        if(delete_idx == -1){
+//            return false;
+//        }
+//        
+//         //head is the removed one
+//        if(delete_idx == 0) {
+//            head = head.next;
+//            return true;
+//        }
+//        
+//        // The node is being removed which is at right of the head
+//        Node current = head ;
+//        int pos = 0;
+//        while(pos < delete_idx - 1){
+//            current = current.next;
+//            pos++;
+//        }
+//        current.next = current.next.next;
+//        return true;
+//    }
+    
     public boolean delete(String data) {
-        int delete_idx = indexOf(data);
-        if(delete_idx == -1){
+        if(head == null) {
             return false;
         }
-        
-         //head is the removed one
-        if(delete_idx == 0) {
+        if(head.data.toLowerCase().equalsIgnoreCase(data.trim().toLowerCase())) {
             head = head.next;
             return true;
         }
         
-        // The node is being removed which is at right of the head
-        Node current = head ;
-        int pos = 0;
-        while(pos < delete_idx){
+        //From now on, the deleted node must be at the right of the head
+        Node current = head;
+        while(current.next != null && !current.next.data.toLowerCase().equalsIgnoreCase(data.trim().toLowerCase())) {
             current = current.next;
-            pos++;
+        }
+        
+        //if the pointer current traverse to the last node of the linkedlist, it surely to be not found
+        if(current.next == null) {
+            return false;
         }
         current.next = current.next.next;
         return true;
@@ -128,5 +151,22 @@ public class LinkedList {
         
     }
     
+    public static void main(String[] args) {
+        LinkedList list = new LinkedList();
+        
+        list.add("123");
+        list.add("456");
+        list.add("234");
+        list.add("789");
+        
+        list.display();
+        System.out.println("");
+        list.delete("789");
+        list.delete("234");
+        list.delete("456");
+        list.delete("123");
+        
+        list.display();
+    }
     
 }
