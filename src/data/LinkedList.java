@@ -151,22 +151,5 @@ public class LinkedList {
         
     }
     
-    public static void main(String[] args) {
-        LinkedList list = new LinkedList();
-        
-        list.add("123");
-        list.add("456");
-        list.add("234");
-        list.add("789");
-        
-        list.display();
-        System.out.println("");
-        list.delete("789");
-        list.delete("234");
-        list.delete("456");
-        list.delete("123");
-        
-        list.display();
-    }
     
 }
