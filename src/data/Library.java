@@ -1,28 +1,30 @@
 package data;
 
+import java.util.Scanner;
+
 public class Library {
 
-    private String[] avail_list;
+    private Book[] avail_list;
     private int quantity;
-    private LinkedList borrowed_list;
+    public BorrowedList borrowed_list;
 
     public Library() {
-        avail_list = new String[10];
+        avail_list = new Book[10];
         quantity = 0;
-        borrowed_list = new LinkedList();
+        borrowed_list = new BorrowedList();
     }
 
-    public void add(String title) {
+    public void add(Book book) {
         if (quantity + 1 > avail_list.length) {
             resize();
         }
-        avail_list[quantity] = title;
+        avail_list[quantity] = book;
         quantity++;
     }
 
     public void resize() {
-        // increase size by 50%
-        String[] temp = new String[avail_list.length + avail_list.length / 2];
+        // increase size by 100%
+        Book[] temp = new Book[avail_list.length * 2];
         for (int i = 0; i < quantity; i++) {
             temp[i] = avail_list[i];
         }
@@ -36,22 +38,19 @@ public class Library {
             System.out.println(count + ". " + avail_list[i]);
             count++;
         }
+        if(count == 1) {
+            System.out.println("no books");
+        }
         System.out.println("");
     }
     
-    public void displayBorrowedList() {
-        System.out.println("__________Borrowed books_________");
-        borrowed_list.display();
-        System.out.println("");
-    }
-
-    public void getStatus(String title) {
-        System.out.print("Status of \"" + title + "\": ");
-        if(borrowed_list.exist(title) == true) {
+    public void getStatus(int ID) {
+        System.out.print("Status of \"" + ID + "\": ");
+        if(borrowed_list.existID(ID) == true) {
             System.out.println("Already borrowed");
             return;
         }
-        if(exist(title) == true) {
+        if(existID(ID) == true) {
             System.out.println("Available");
             return;
         }
@@ -59,74 +58,142 @@ public class Library {
     }
 
     // muon sach
-    public boolean borrowBook(String title) { 
-        if(borrowed_list.exist(title)) {
+    public boolean borrowBook(int ID) { 
+        if(borrowed_list.existID(ID)) {
             System.out.println("Already borrowed!");
             return false;
         }
-        if(exist(title) == false) {
+        if(existID(ID) == false) {
             System.out.println("Not exists in system");
             return false;
         }
-        delete(title);
+        Book temp = delete(ID);
         // them vao borrowed book
-        borrowed_list.add(title);
+        borrowed_list.add(temp);
         return true;
     }
 
-    public boolean returnBook(String title) {
-        if(borrowed_list.delete(title) == false) {
+    public boolean returnBook(int ID) {
+        Book delete_book = borrowed_list.delete(ID);
+        if(delete_book == null) {
             System.out.println("Not exists in Borrowed List!");
             return false;
         }
-        add(title);
+        add(delete_book);
         return true;
     }
     
-    public boolean exist(String title) {
+    public int indexOf(int ID) {
         for (int i = 0; i < quantity; i++) {
-            if (avail_list[i].equalsIgnoreCase(title)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public int indexOf(String title) {
-        for (int i = 0; i < quantity; i++) {
-            if (avail_list[i].equalsIgnoreCase(title)) {
+            if (avail_list[i].getID() == ID) {
                 return i;
             }
         }
         return -1;
     }
 
-    public boolean delete(String title) {
-        int delete_idx = indexOf(title);
+    public Book delete(int ID) {
+        int delete_idx = indexOf(ID);
         if (delete_idx == -1) {
-            return false;
+            return null;
         }
+        Book temp = avail_list[delete_idx];
         for (int i = delete_idx; i < quantity - 1; i++) {
             avail_list[i] = avail_list[i + 1];
         }
         quantity--;
-        return true;
+        return temp;
     }
     
-    public void searchAvailList(String search_str) {
-        System.out.println("Qualified list:");
-        for(int i = 0; i < quantity; i++) {
-            if(avail_list[i].toLowerCase().contains(search_str.trim().toLowerCase())) {
-                System.out.println((i+1) + ": " + avail_list[i]);
+    public int subMenu() {
+        int choice = 0;
+        do {
+            try {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("--------------SUB SEARCH MENU-------------------");
+            System.out.println("1. SearchByID");
+            System.out.println("2. SearchByTitle");
+            System.out.println("3. SearchByAuthor");
+            System.out.print("Enter your choice: ");
+            choice = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input choice!");
+                continue;
             }
+            return choice;
+        } while(true);
+    }
+    
+    public void searchID_AvailList(int ID) {
+        System.out.println("Qualified list:");
+        int count = 0;
+        for(int i = 0; i < quantity; i++) {
+            if(avail_list[i].getID() == ID) {
+                System.out.println((count+1) + ": " + avail_list[i]);
+                count++;
+            }
+        }
+        if(count == 0) {
+            System.out.println("no books");
         }
         System.out.println("");
     }
     
-    public void searchBorrowedList(String search_str) {
+    public void searchTiltle_AvailList(String search_str) {
         System.out.println("Qualified list:");
-        borrowed_list.search(search_str);
+        int count = 0;
+        for(int i = 0; i < quantity; i++) {
+            if(avail_list[i].getTitle().contains(search_str.trim().toLowerCase())) {
+                System.out.println((count+1) + ": " + avail_list[i]);
+                count++;
+            }
+        }
+        if(count == 0) {
+            System.out.println("no books");
+        }
         System.out.println("");
+    }
+    
+    public void searchAuthor_AvailList(String search_str) {
+        System.out.println("Qualified list:");
+        int count = 0;
+        for(int i = 0; i < quantity; i++) {
+            if(avail_list[i].getAuthor().contains(search_str.trim().toLowerCase())) {
+                System.out.println((count+1) + ": " + avail_list[i]);
+                count++;
+            }
+        }
+        if(count == 0) {
+            System.out.println("no books");
+        }
+        System.out.println("");
+    }
+    
+    public boolean existID(int ID) {
+        for (int i = 0; i < quantity; i++) {
+            if (avail_list[i].getID() == ID) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean existTitle(String title) {
+        for (int i = 0; i < quantity; i++) {
+            if (avail_list[i].getTitle().toLowerCase().contains(title.trim().toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean existAuthor(String author) {
+        for (int i = 0; i < quantity; i++) {
+            if (avail_list[i].getAuthor().toLowerCase().contains(author.trim().toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
