@@ -33,6 +33,12 @@ public class App {
         menu.addNewOption("Searching a book in borrowed books");
         menu.addNewOption("Exit");
 
+        Menu subMenu = new Menu("SubMenu 's Searching");
+        subMenu.addNewOption("SearchByID");
+        subMenu.addNewOption("SearchByTitle");
+        subMenu.addNewOption("SearchByAuthor");
+        
+        
         int choice;
         do {
             menu.print();
@@ -65,7 +71,8 @@ public class App {
                     break;
                     
                 case 6:
-                    int choice1 = library.subMenu();
+                    subMenu.print();
+                    int choice1 = subMenu.getChoice();
                     switch(choice1) {
                         case 1:
                             int id = Inputter.getAnInteger("Enter the ID of the book to search: ", "Book title is required.");
@@ -82,7 +89,9 @@ public class App {
                     break;
                     
                 case 7:
-                    int choice2 = library.subMenu();
+                    subMenu.print();
+                    int choice2 = subMenu.getChoice();
+                    
                     switch(choice2) {
                         case 1:
                             int id = Inputter.getAnInteger("Enter the ID of the book to search: ", "Book title is required.");

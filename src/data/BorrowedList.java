@@ -51,6 +51,7 @@ public class BorrowedList {
     public void display() {
         int count = 1;
         Node current = head;
+        System.out.println("__________Borrowed books_________");
         while (current != null) {
             System.out.println(count + ". " + current.book.toString());
             current = current.next;
@@ -59,6 +60,7 @@ public class BorrowedList {
         if(count == 1) {
             System.out.println("no books");
         }
+        System.out.println("");
     }
 
     

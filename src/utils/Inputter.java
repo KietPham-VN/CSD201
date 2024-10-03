@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Inputter {
 
     public static final Scanner sc = new Scanner(System.in);
-
+    
     //1. method ép người dùng nhập số nguyên
     public static int getAnInteger(String inpMsg, String errMsg) {
         System.out.print(inpMsg);
